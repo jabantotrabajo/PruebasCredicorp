@@ -1,0 +1,141 @@
+name: "Solicitud de Pase Oficial"
+description: "Formulario estructurado para el pase de datos a producción con asignación de roles."
+title: "[LHCL]DAOPCREDICORP: Despliegue primer formulario"
+labels: ["tipo:pase"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 🚀 Formulario de Pase a Producción
+        Por favor, completa rigurosamente las secciones técnicas y de gobierno de datos. Esto iniciará el flujo automatizado de aprobación por etapas.
+
+  # --- SECCIÓN JIRA ---
+  - type: markdown
+    attributes:
+      value: "### 🔗 Vinculación con Jira"
+  - type: input
+    id: jira_subtask
+    attributes:
+      label: "🆔 Código de la Subtarea de Jira"
+      description: "Introduce el código de la subtarea ligada a este pase. El sistema validará su estado automáticamente."
+      placeholder: "Ej: DATA-12345"
+    validations:
+      required: true
+
+  # --- SECCIÓN EQUIPO SOLICITANTE ---
+  - type: dropdown
+    id: squad
+    attributes:
+      label: "👥 Squad Solicitante"
+      options:
+        - "Squad Canales Digitales"
+        - "Squad Core Banking"
+        - "Squad Data & Analytics"
+        - "Squad CRM & Marketing"
+        - "Otro / Squad No Listado"
+    validations:
+      required: true
+
+  # --- SECCIÓN ROLES INVOLUCRADOS ---
+  - type: markdown
+    attributes:
+      value: "### 👤 Gobierno y Roles del Pase"
+  
+  - type: dropdown
+    id: product_owner
+    attributes:
+      label: "👑 Product Owner (PO)"
+      options:
+        - "Alan Turing (PO Canales)"
+        - "Ada Lovelace (PO Core)"
+        - "Grace Hopper (PO Data)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: de_chapter_leader
+    attributes:
+      label: "🛡️ Data Engineer Referente (Chapter Leader)"
+      description: "Líder técnico encargado de la primera etapa de revisión."
+      options:
+        - "CL JUAN"
+        - "CL PEDRO"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: de_responsable
+    attributes:
+      label: "⚙️ Data Engineer Responsable"
+      description: "Ingeniero encargado de la ejecución técnica del pase."
+      options:
+        - "DE Pablo Ramirez"
+        - "DE Marcos Lopez"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: analista_seguridad
+    attributes:
+      label: "🔍 Analista de Seguridad"
+      description: "Encargado de validar políticas de accesos y masking de datos."
+      options:
+        - "SecOps - Luis"
+        - "SecOps - Carlos"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: custodio_tecnico
+    attributes:
+      label: "🔑 Custodio Técnico"
+      description: "Encargado de validar o ratificar la data POST pase a producción."
+      options:
+        - "Custodio - Finanzas"
+        - "Custodio - Riesgos"
+        - "Custodio - Clientes"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: data_steward
+    attributes:
+      label: "📊 Data Steward"
+      description: "Garante del catálogo de datos y definiciones de negocio."
+      options:
+        - "Steward - Alex"
+        - "Steward - Jean"
+    validations:
+      required: true
+
+  # --- SECCIÓN INSTRUCTIVOS ---
+
+  # --- INSTRUCTIVO DE PASE A CERTIFICACIÓN ---
+  - type: textarea
+    id: instructivos_certificacion
+    attributes:
+      label: "🧪 Instructivos del Pase a Certificación"
+      description: "Detalla paso a paso las instrucciones técnicas que ejecutará el GitHub Action."
+      placeholder: "1. Ejecutar script_migracion.sql\n2. Actualizar particiones en Data Lake..."
+    validations:
+      required: true
+
+  # --- INSTRUCTIVO DE PASE A PRODUCCIÓN ---
+  - type: textarea
+    id: instructivos_produccion
+    attributes:
+      label: "🚀 Instructivos del Pase a Producción"
+      description: "Detalla paso a paso las instrucciones técnicas que ejecutará el GitHub Action."
+      placeholder: "1. Ejecutar script_migracion.sql\n2. Actualizar particiones en Data Lake..."
+    validations:
+      required: true
+
+  # --- INSTRUCTIVO DE REVERSIÓN ---
+  - type: textarea
+    id: instructivos_reversion
+    attributes:
+      label: "🔄 Instructivos de Reversión"
+      description: "Detalla paso a paso las instrucciones técnicas que ejecutará el GitHub Action."
+      placeholder: "1. Ejecutar script_migracion.sql\n2. Actualizar particiones en Data Lake..."
+    validations:
+      required: true

@@ -1,0 +1,85 @@
+name: Flujo DataOps - Despliegue a Certificación
+
+# Controls when the workflow will run
+on:
+   issues:
+     types: [opened]
+     branches: [main]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # --- STAGE 1: Solicitud de pase (Inicialización) ---
+  solicitud_pase:
+    # if: contains(github.event.issue.labels.*.name, 'tipo:pase')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inicializar solicitud de pase
+        run: echo "Pase enviado por el Data Engineer solicitante."
+
+  # --- STAGE 2: Validar checklist de desarrollo (Data Engineer Referente) ---
+  stage_revision_checklist:
+    needs: solicitud_pase
+    runs-on: ubuntu-latest
+    environment: Revision-Checklist
+    steps:
+      - name: Validar Checklist OK
+        run: echo "Checklist aprobado por el DE Referente."
+
+  # --- STAGE 3: Revisión de Seguridad (Analista de Seguridad) ---
+  stage_aprobacion_seguridad:
+    needs: stage_revision_checklist
+    runs-on: ubuntu-latest
+    environment: Aprobacion-Seguridad
+    steps:
+      - name: Validar Seguridad OK
+        run: echo "Conformidad otorgada por el Analista de Seguridad."
+
+  # --- STAGE 4: Planificación y Configuración (Solo DataOps) ---
+  stage_planificacion_y_configuracion_dataops:
+    needs: stage_aprobacion_seguridad
+    runs-on: ubuntu-latest
+    environment: Planificacion-Ambiente-DataOps # <-- Configurar en Web para el rol DataOps
+    steps:
+      - name: Ejecutar Tareas Previas de DataOps
+        run: |
+          echo "Ejecutando: Asignación y planificación del release..."
+          echo "Ejecutando: Configuración del ambiente de certificación..."
+
+  # --- STAGE 5: Despliegue, Automatización y Validaciones (Aprobación Conjunta: DataOps + Data Release) ---
+  stage_despliegue_y_automatizacion:
+    needs: stage_planificacion_y_configuracion_dataops
+    runs-on: ubuntu-latest
+    # Este entorno requiere que AMBOS roles aprueben en la web antes de ejecutar el código
+    environment: Despliegue-y-Automatizacion-Conjunto 
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Ejecutar Despliegue Técnico y Pruebas CI/CD
+        run: |
+          echo "Ejecutando: Despliegue en certificación (Wheel + workflow + job)..."
+          echo "Ejecutando: Automatización y validaciones (CI/CD, pruebas, logs)..."
+          echo "¡Despliegue técnico y validaciones automatizadas finalizadas con éxito!"
+
+  # --- STAGE 6: Validación Funcional y Evidencias (Data Steward) ---
+  stage_validacion_funcional_steward:
+    needs: stage_despliegue_y_automatizacion
+    runs-on: ubuntu-latest
+    environment: Validacion-Funcional-Steward # <-- Configurar en Web para el rol Data Steward
+    steps:
+      - name: Validación Funcional de Negocio y Cierre
+        run: |
+          echo "Ejecutando: Validación Funcional (Automatizada/Manual de cara al negocio)..."
+          echo "Registrando evidencias finales (Versión, Job ID, conformidades)..."
+          echo "=========================================================="
+          echo "EL DATA STEWARD HA VALIDADO LA DATA. PASE EXITOSO Y CERRADO."
+          echo "=========================================================="
+
+  # --- MANEJO DE RECHAZOS ---
+  notificar_rechazo:
+    needs: [stage_revision_checklist, stage_aprobacion_seguridad, stage_planificacion_y_configuracion_dataops, stage_despliegue_y_automatizacion, stage_validacion_funcional_steward]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Alerta de Desaprobación
+        run: echo "⚠️ El flujo se ha detenido porque un aprobador rechazó el pase o un paso técnico falló."
