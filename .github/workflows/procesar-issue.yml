@@ -6,7 +6,6 @@ on:
 
 jobs:
   crear-nuevo-repo:
-    if: contains(github.event.issue.labels.*.name, 'crear-repo')
     runs-on: ubuntu-latest
 
     steps:
