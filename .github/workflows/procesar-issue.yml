@@ -24,8 +24,9 @@ jobs:
             exit 1
           fi
 
-          # 2. Crear el repositorio privado usando GitHub CLI
-          gh repo create "$REPO_NAME" --private --confirm
+          # 2. Crear el repositorio privado en la nube sin clonar en local
+          # Usamos la organización o usuario del token actual de forma directa
+          gh repo create "$REPO_NAME" --private --clone=false
 
           # 3. Comentar en el Issue y cerrarlo
           gh issue comment ${{ github.event.issue.number }} --body "¡Listo! El repositorio **$REPO_NAME** ha sido creado con éxito. 🚀"
