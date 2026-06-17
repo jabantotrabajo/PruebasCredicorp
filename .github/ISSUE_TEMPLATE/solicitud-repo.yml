@@ -1,0 +1,15 @@
+name: "Solicitar Nuevo Repositorio"
+description: "Crea un nuevo repositorio automáticamente rellenando este formulario."
+title: "[Solicitud]: "
+labels: ["crear-repo"]
+body:
+  - type: markdown
+    attributes:
+      value: "### ¡Bienvenido! Por favor, introduce el nombre del repositorio que deseas crear."
+  - type: input
+    id: nombre_repo
+    attributes:
+      label: "Nombre del Repositorio"
+      placeholder: "ej. mi-proyecto-genial"
+    validations:
+      required: true

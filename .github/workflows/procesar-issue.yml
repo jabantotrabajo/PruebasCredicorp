@@ -1,0 +1,33 @@
+name: Procesar Solicitud de Repositorio
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  crear-nuevo-repo:
+    if: contains(github.event.issue.labels.*.name, 'crear-repo')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Instalar GitHub CLI y procesar Issue
+        env:
+          GH_TOKEN: ${{ secrets.MI_PERSONAL_ACCESS_TOKEN }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          # 1. Extraer el nombre del repositorio del formulario
+          REPO_NAME=$(echo "$ISSUE_BODY" | awk '/### Nombre del Repositorio/{getline; getline; print}' | tr -d '\r ' )
+          
+          echo "El nombre detectado es: $REPO_NAME"
+          
+          if [ -z "$REPO_NAME" ]; then
+            echo "No se pudo extraer un nombre válido."
+            exit 1
+          fi
+
+          # 2. Crear el repositorio privado usando GitHub CLI
+          gh repo create "$REPO_NAME" --private --confirm
+
+          # 3. Comentar en el Issue y cerrarlo
+          gh issue comment ${{ github.event.issue.number }} --body "¡Listo! El repositorio **$REPO_NAME** ha sido creado con éxito. 🚀"
+          gh issue close ${{ github.event.issue.number }} --reason "completed"
